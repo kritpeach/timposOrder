@@ -1,0 +1,108 @@
+<template>
+  <v-app light>
+    <v-toolbar dark color="primary">
+      <v-btn icon @click="() => $router.go(-1)">
+        <v-icon>arrow_back</v-icon>
+      </v-btn>
+      <v-toolbar-title class="white--text">{{menu.name}}</v-toolbar-title>
+      <v-spacer></v-spacer>
+    </v-toolbar>
+    <v-content>
+      <v-list subheader>
+        <v-subheader>Price</v-subheader>
+        <v-radio-group class="pt-0" v-model="order.price">
+          <v-list-tile v-for="price in menu.prices" :key="price.name + price.value">
+            <v-radio :label="`${price.name} - ฿${price.value}`" :value="price"></v-radio>
+          </v-list-tile>
+        </v-radio-group>
+
+        <v-divider></v-divider>
+        <v-subheader>Special instruction</v-subheader>
+        <v-list-tile>
+          <v-text-field v-model="order.optional" label="Add a note (extra sauce, no onions, etc.)" single-line></v-text-field>
+        </v-list-tile>
+
+        <v-divider></v-divider>
+        <v-subheader>Quantity</v-subheader>
+        <v-list-tile>
+          <v-text-field v-model.number="order.quantity" single-line type="number"></v-text-field>
+        </v-list-tile>
+      </v-list>
+      <v-btn v-if="!isUpdateMode" @click="addToCart" class="my-0 bottomBtn" depressed block fixed dark>Add to cart</v-btn>
+    </v-content>
+
+  </v-app>
+</template>
+
+<script>
+import firebaseApp from '../connector/firebase';
+import listToMap from '../util/listToMap';
+
+export default {
+  data() {
+    const { restaurantId } = this.$route.params;
+    const restaurantRef = firebaseApp
+      .firestore()
+      .collection('restaurant')
+      .doc(restaurantId);
+    return {
+      restaurantRef,
+    };
+  },
+  beforeMount() {
+    const { menuId } = this.$route.params;
+    const menuRef = firebaseApp
+      .firestore()
+      .collection('menu')
+      .doc(menuId);
+    if (this.isUpdateMode) {
+      this.order = this.cartOrder;
+    } else {
+      this.order = {
+        menu: {
+          id: menuId,
+          ref: menuRef,
+        },
+        price: null,
+        optional: '',
+        quantity: 1,
+      };
+    }
+  },
+  computed: {
+    menu() {
+      const { menuId } = this.$route.params;
+      return this.$store.getters.menu(menuId);
+    },
+    cartOrder() {
+      const { cartIndex, billId } = this.$route.params;
+      return this.$store.getters.cartOrderList(billId)[cartIndex];
+    },
+    isUpdateMode() {
+      const { cartIndex } = this.$route.params;
+      return cartIndex >= 0;
+    },
+  },
+  methods: {
+    addToCart() {
+      const { billId } = this.$route.params;
+      const order = { ...this.order };
+      order.menu.name = this.menu.name;
+      order.menu.categories = listToMap(this.menu.categories);
+      this.$store.dispatch('addOrderToCart', {
+        order,
+        billId,
+      });
+    },
+  },
+};
+</script>
+
+<style scoped>
+a {
+  text-decoration: none;
+}
+.bottomBtn {
+  bottom: 0;
+}
+</style>
