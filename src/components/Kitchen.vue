@@ -46,7 +46,7 @@
                     <v-list-tile-sub-title>{{menu.optional}}</v-list-tile-sub-title>
                   </v-list-tile-content>
                   <v-list-tile-action>
-                    <v-btn v-if="!menu.cancel" @click="onDeleteBtnClick(order,i)" icon ripple>
+                    <v-btn v-if="!menu.cancel && !menu.done" @click="onDeleteBtnClick(order,i)" icon ripple>
                       <v-icon color="grey lighten-1">delete</v-icon>
                     </v-btn>
                   </v-list-tile-action>
@@ -111,10 +111,8 @@ export default {
         }
         return o;
       });
-      const notDoneAndnotCancel = newOrderList.filter(o => o.done === false &&
-      (o.cancel === null || o.cancel === false));
-
-      if (notDoneAndnotCancel.length > 0) {
+      const notDoneAndNotCancel = newOrderList.filter(o => !(o.done || o.cancel));
+      if (notDoneAndNotCancel.length > 0) {
         firebaseApp
           .firestore()
           .collection('order')
@@ -134,18 +132,14 @@ export default {
       }
     },
     onCheckBoxChange(order) {
-      const numberOfOrderLineItem = order.order.length;
-      const numberOfDoneOrderLineItem = order.order.filter(o => o.done === true)
-        .length;
-      if (numberOfOrderLineItem === numberOfDoneOrderLineItem) {
-        // All Done
+      const notDoneAndNotCancel = order.order.filter(o => !(o.done || o.cancel));
+      if (notDoneAndNotCancel.length > 0) {
         firebaseApp
           .firestore()
           .collection('order')
           .doc(order.id)
           .update({
             order: order.order,
-            doneAt: firebase.firestore.FieldValue.serverTimestamp(),
           });
       } else {
         firebaseApp
@@ -154,7 +148,7 @@ export default {
           .doc(order.id)
           .update({
             order: order.order,
-            doneAt: null,
+            doneAt: firebase.firestore.FieldValue.serverTimestamp(),
           });
       }
     },
