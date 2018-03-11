@@ -11,14 +11,21 @@
           <v-icon>more_vert</v-icon>
         </v-btn>
         <v-list>
-          <v-list-tile @click="cancelBill">
-            <v-list-tile-title>Cancel bill</v-list-tile-title>
-          </v-list-tile>
+          <template v-if="notDoneOrderCount === 0">
+            <v-list-tile @click="cancelBill">
+              <v-list-tile-title>Cancel bill</v-list-tile-title>
+            </v-list-tile>
+          </template>
+          <template v-else>
+            <v-list-tile disabled>
+              <v-list-tile-title>Cancel bill</v-list-tile-title>
+            </v-list-tile>
+          </template>
         </v-list>
       </v-menu>
     </v-toolbar>
     <v-content>
-      <v-list dense v-if="cartOrderList.length > 0" two-line class="mb-2">
+      <v-list dense v-if="cartOrderList.length > 0" class="mb-2">
         <v-subheader>
           <span>Unsend orders</span>
           <v-spacer></v-spacer>
@@ -40,32 +47,28 @@
         </router-link>
       </v-list>
 
-      <v-list class="mb-2 pa-0" two-line v-for="(order,i) in orderList" :key="i" dense>
+      <v-list class="pa-0 mb-2" dense>
         <v-subheader>
-          <span v-if="order.createAt">
-            <timeago :since="order.createAt" :auto-update="60"></timeago> by {{order.creator}}</span>
+          <span>Order</span>
           <v-spacer></v-spacer>
         </v-subheader>
         <v-divider></v-divider>
-        <v-list-tile v-for="(orderItem,j) in order.order" :key="`${i}|${j}`">
-          <v-list-tile-content>
-            <v-list-tile-title>{{orderItem.menu.name}} {{orderItem.price.name}} x{{orderItem.quantity}}</v-list-tile-title>
-            <v-list-tile-sub-title>{{orderItem.optional}}</v-list-tile-sub-title>
-          </v-list-tile-content>
-          <v-list-tile-action-text>฿ {{orderItem.price.value}}</v-list-tile-action-text>
-        </v-list-tile>
+        <template v-for="(order,i) in orderList">
+          <v-list-tile v-for="(orderItem,j) in order.order" :key="`${i}|${j}`">
+            <v-list-tile-content :class="{cancel: orderItem.cancel, done: orderItem.done}">
+              <v-list-tile-title>{{orderItem.menu.name}} {{orderItem.price.name}} x{{orderItem.quantity}}</v-list-tile-title>
+              <v-list-tile-sub-title>{{orderItem.optional}}</v-list-tile-sub-title>
+            </v-list-tile-content>
+            <v-list-tile-action-text>฿ {{orderItem.price.value}}</v-list-tile-action-text>
+          </v-list-tile>
+        </template>
       </v-list>
 
       <v-list v-if="orderList !== null && orderList.length > 0" class="mb-2 pa-0" dense>
         <v-subheader>
           <span>Summary</span>
           <v-spacer></v-spacer>
-          <template v-if="notDoneOrderCount > 0">
-            <v-btn outline disabled small color="primary" @click="closeBill">Cooking</v-btn>
-          </template>
-          <template v-else>
-            <v-btn outline small color="primary" @click="closeBill">Bill</v-btn>
-          </template>
+          <v-btn outline :disabled="notDoneOrderCount > 0" small color="primary" @click="closeBill">Bill</v-btn>
         </v-subheader>
         <v-divider></v-divider>
         <v-list-tile>
@@ -75,6 +78,7 @@
           <v-list-tile-action-text>฿ {{summary.totalPrice}}</v-list-tile-action-text>
         </v-list-tile>
       </v-list>
+      <div style="height: 200px"></div>
       <v-btn fixed dark fab bottom right color="pink" @click.stop="onClickAddFab" :to="{ name: 'SearchMenu', params: { restaurantId: $route.params.restaurantId, billId: $route.params.billId }}">
         <v-icon>add</v-icon>
       </v-btn>
@@ -114,13 +118,14 @@ export default {
       creating: false,
       billList: null,
       sending: false,
-      orderList: null,
+      orderList: [],
     };
   },
   mounted() {
     const { billId } = this.$route.params;
     this.unsubscribe = orderService.onSnapshotByBillId(billId, (orderList) => {
       // console.log(orderList.filter(order => order.doneAt === null).length);
+      console.log(orderList);
       this.orderList = orderList;
     });
   },
@@ -194,7 +199,10 @@ export default {
     summary() {
       const orderList = this.orderList || [];
       const sumOrder = e =>
-        e.reduce((pV, cV) => pV + (cV.price.value * cV.quantity), 0);
+        e.reduce((pV, cV) => {
+          const total = cV.price.value * cV.quantity;
+          return pV + total;
+        }, 0);
       const totalPrice = orderList
         .map(e => e.order)
         .reduce((pV, cV) => pV + sumOrder(cV), 0);
@@ -211,5 +219,13 @@ a {
 
 #app {
   background: #eeeeee;
+}
+
+.cancel {
+  text-decoration: line-through !important;
+}
+
+.done {
+  color: #1b5e20;
 }
 </style>
