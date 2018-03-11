@@ -56,11 +56,16 @@
         </v-list-tile>
       </v-list>
 
-      <v-list v-if="orderList !== null && orderList.length > 0"  class="mb-2 pa-0" dense>
+      <v-list v-if="orderList !== null && orderList.length > 0" class="mb-2 pa-0" dense>
         <v-subheader>
           <span>Summary</span>
           <v-spacer></v-spacer>
-          <v-btn outline small color="primary" @click="closeBill">Bill</v-btn>
+          <template v-if="notDoneOrderCount > 0">
+            <v-btn outline disabled small color="primary" @click="closeBill">Cooking</v-btn>
+          </template>
+          <template v-else>
+            <v-btn outline small color="primary" @click="closeBill">Bill</v-btn>
+          </template>
         </v-subheader>
         <v-divider></v-divider>
         <v-list-tile>
@@ -115,6 +120,7 @@ export default {
   mounted() {
     const { billId } = this.$route.params;
     this.unsubscribe = orderService.onSnapshotByBillId(billId, (orderList) => {
+      // console.log(orderList.filter(order => order.doneAt === null).length);
       this.orderList = orderList;
     });
   },
@@ -181,6 +187,9 @@ export default {
     cartOrderList() {
       const { billId } = this.$route.params;
       return this.$store.getters.cartOrderList(billId);
+    },
+    notDoneOrderCount() {
+      return this.orderList.filter(order => order.doneAt === null).length;
     },
     summary() {
       const orderList = this.orderList || [];
