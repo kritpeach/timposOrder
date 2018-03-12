@@ -101,7 +101,7 @@
             <v-card-actions>
               <v-spacer></v-spacer>
               <v-btn color="blue darken-1" flat @click="billDialog.show = false">Close</v-btn>
-              <v-btn color="primary" :loading="creating" :disabled="!billDialog.valid">Bill</v-btn>
+              <v-btn color="primary" :loading="closingBill" :disabled="!billDialog.valid" @click="closeBill">Bill</v-btn>
             </v-card-actions>
           </v-form>
         </v-card>
@@ -139,7 +139,7 @@ export default {
           noMoney: false,
         },
       },
-      creating: false,
+      closingBill: false,
       billList: null,
       sending: false,
       orderList: [],
@@ -182,14 +182,16 @@ export default {
         });
     },
     async closeBill() {
-      const { billId } = this.$route.params;
+      const { billId, restaurantId } = this.$route.params;
+      this.closingBill = true;
       billService
         .update({
           id: billId,
           status: 'close',
         })
         .then(() => {
-          console.log('Close');
+          this.closingBill = false;
+          this.$router.push({ name: 'BillList', restaurantId });
         });
     },
     async send() {
@@ -247,7 +249,7 @@ export default {
         }, 0);
       const totalPrice = orderList
         .map(e => e.order)
-        .reduce((pV, cV) => pV + sumOrder(cV), 0);
+        .reduce((pV, cV) => pV + sumOrder(cV.filter(orderLineItem => orderLineItem.cancel === false || typeof orderLineItem.cancel === 'undefined')), 0);
       return { totalPrice };
     },
   },
