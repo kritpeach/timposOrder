@@ -11,7 +11,7 @@
           <v-icon>more_vert</v-icon>
         </v-btn>
         <v-list>
-          <template v-if="notDoneOrderCount === 0">
+          <template v-if="isAllOrderCancelled">
             <v-list-tile @click="cancelBill">
               <v-list-tile-title>Cancel bill</v-list-tile-title>
             </v-list-tile>
@@ -68,7 +68,7 @@
         <v-subheader>
           <span>Summary</span>
           <v-spacer></v-spacer>
-          <v-btn outline :disabled="notDoneOrderCount > 0" small color="primary" @click="closeBill">Bill</v-btn>
+          <v-btn outline :disabled="notDoneOrderCount > 0" small color="primary" @click.stop="onClickBill">Bill</v-btn>
         </v-subheader>
         <v-divider></v-divider>
         <v-list-tile>
@@ -82,6 +82,30 @@
       <v-btn fixed dark fab bottom right color="pink" @click.stop="onClickAddFab" :to="{ name: 'SearchMenu', params: { restaurantId: $route.params.restaurantId, billId: $route.params.billId }}">
         <v-icon>add</v-icon>
       </v-btn>
+      <v-dialog v-model="billDialog.show" persistent max-width="500px">
+        <v-card>
+          <v-form v-model="billDialog.valid" ref="form">
+            <v-card-title>
+              <span class="headline">Total price ฿{{summary.totalPrice}}</span>
+            </v-card-title>
+            <v-card-text>
+              <v-container grid-list-md>
+                <v-layout wrap>
+                  <v-flex>
+                    <v-text-field v-model.number="billDialog.form.receiveMoney" type="number" min="0" step="0.01" :rules="[rules.onlyNumber,rules.enoughMoney]" label="Receive money"></v-text-field>
+                  </v-flex>
+                </v-layout>
+              </v-container>
+              <span v-if="change >=0">Change ฿{{change}}</span>
+            </v-card-text>
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn color="blue darken-1" flat @click="billDialog.show = false">Close</v-btn>
+              <v-btn color="primary" :loading="creating" :disabled="!billDialog.valid">Bill</v-btn>
+            </v-card-actions>
+          </v-form>
+        </v-card>
+      </v-dialog>
     </v-content>
   </v-app>
 </template>
@@ -105,27 +129,32 @@ export default {
       .doc(billId);
       */
     return {
-      managementDialog: {
+      billDialog: {
         show: false,
         valid: false,
         form: {
           restaurant: restaurantRef,
         },
         error: {
-          duplicate: false,
+          noMoney: false,
         },
       },
       creating: false,
       billList: null,
       sending: false,
       orderList: [],
+      rules: {
+        onlyNumber: (v) => {
+          const pattern = /^[\d.]+$/;
+          return pattern.test(v) || 'Please input only number';
+        },
+        enoughMoney: v => this.summary.totalPrice <= v || 'Not enough money',
+      },
     };
   },
   mounted() {
     const { billId } = this.$route.params;
     this.unsubscribe = orderService.onSnapshotByBillId(billId, (orderList) => {
-      // console.log(orderList.filter(order => order.doneAt === null).length);
-      console.log(orderList);
       this.orderList = orderList;
     });
   },
@@ -133,6 +162,11 @@ export default {
     this.unsubscribe();
   },
   methods: {
+    async onClickBill() {
+      this.$refs.form.reset();
+      this.billDialog.error.noMoney = false;
+      this.billDialog.show = true;
+    },
     async onClickAddFab() {
       console.log('click');
     },
@@ -185,6 +219,14 @@ export default {
     },
   },
   computed: {
+    isAllOrderCancelled() {
+      const isAllOrderCancelled = this.orderList.every(order => order.order.every(orderListItem =>
+        orderListItem.cancel === true));
+      return isAllOrderCancelled;
+    },
+    change() {
+      return this.billDialog.form.receiveMoney - this.summary.totalPrice;
+    },
     bill() {
       const { billId } = this.$route.params;
       return this.$store.getters.bill(billId);
