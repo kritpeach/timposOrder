@@ -47,7 +47,7 @@
         </router-link>
       </v-list>
 
-      <v-list class="pa-0 mb-2" dense>
+      <v-list v-if="orderList.length > 0" class="pa-0 mb-2" dense>
         <v-subheader>
           <span>Order</span>
           <v-spacer></v-spacer>
