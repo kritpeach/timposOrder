@@ -8,11 +8,9 @@
           <v-icon>more_vert</v-icon>
         </v-btn>
         <v-list>
-            <v-list-tile @click="() => null">
-            <router-link tag="v-list-tile-title" :to="{ name: 'Kitchen', params: {restaurantId: $route.params.restaurantId}}">
-                Kitchen board
+            <router-link tag="v-list-tile" :to="{ name: 'Kitchen', params: {restaurantId: $route.params.restaurantId}}">
+                <v-list-tile-title>Kitchen board</v-list-tile-title>
             </router-link>
-            </v-list-tile>
             <v-list-tile @click="signout">
               <v-list-tile-title>Sign out</v-list-tile-title>
             </v-list-tile>
