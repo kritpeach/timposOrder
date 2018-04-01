@@ -11,6 +11,7 @@
       </v-btn>
     </v-toolbar>
     <v-content>
+      <v-form v-model="valid">
       <v-list subheader>
         <v-subheader>Price</v-subheader>
         <v-radio-group class="pt-0" v-model="order.price">
@@ -28,10 +29,11 @@
         <v-divider></v-divider>
         <v-subheader>Quantity</v-subheader>
         <v-list-tile>
-          <v-text-field v-model.number="order.quantity" single-line type="number"></v-text-field>
+          <v-text-field v-model.number="order.quantity" single-line type="number" min="1" :rules="[v => v > 0 || 'At least 1']"></v-text-field>
         </v-list-tile>
       </v-list>
-      <v-btn v-if="!isUpdateMode" @click="addToCart" class="my-0 bottomBtn" depressed block fixed dark>Add to cart</v-btn>
+      <v-btn v-if="!isUpdateMode" :disabled="!valid" @click="addToCart" class="my-0 bottomBtn" depressed block fixed dark>Add to cart</v-btn>
+      </v-form>
     </v-content>
 
   </v-app>
@@ -53,6 +55,7 @@ export default {
       .collection('menu')
       .doc(menuId);
     return {
+      valid: true,
       restaurantRef,
       order: {
         menu: {
