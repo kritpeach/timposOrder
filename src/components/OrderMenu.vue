@@ -6,6 +6,9 @@
       </v-btn>
       <v-toolbar-title class="white--text">{{menu.name}}</v-toolbar-title>
       <v-spacer></v-spacer>
+      <v-btn v-if="isUpdateMode" icon dark @click="removeOrder">
+          <v-icon>delete</v-icon>
+      </v-btn>
     </v-toolbar>
     <v-content>
       <v-list subheader>
@@ -102,6 +105,10 @@ export default {
         order,
         billId,
       });
+    },
+    removeOrder() {
+      this.order.billId = '';
+      this.$router.go(-1);
     },
   },
 };
