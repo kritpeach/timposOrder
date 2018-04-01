@@ -41,7 +41,6 @@
         <v-layout row wrap>
           <v-flex xs12 sm6 md4 xl3 v-for="order in notDoneOrderList" :key="order.id">
             <v-card>
-              {{filter}}
               <v-list dense two-line>
                 <v-subheader v-if="order.bill">{{order.bill.name}}&nbsp;-&nbsp;
                   <timeago :since="order.createAt" :auto-update="60"></timeago>
