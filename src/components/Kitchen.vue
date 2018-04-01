@@ -13,12 +13,23 @@
             <v-list-tile-title>{{category.name}}</v-list-tile-title>
           </v-list-tile-content>
         </v-list-tile>
+        <v-list-tile>
+          <v-list-tile-action>
+            <v-checkbox v-model="filter.showNoCategory"></v-checkbox>
+          </v-list-tile-action>
+          <v-list-tile-content>
+            <v-list-tile-title>No category</v-list-tile-title>
+          </v-list-tile-content>
+        </v-list-tile>
       </v-list>
     </v-navigation-drawer>
     <v-toolbar dark color="primary" fixed app>
-      <v-btn icon>
+      
+      <router-link :to="{ name: 'BillList', params: {restaurantId: $route.params.restaurantId}}">
+                <v-btn icon>
         <v-icon>arrow_back</v-icon>
       </v-btn>
+            </router-link>
       <v-toolbar-title>Kitchen</v-toolbar-title>
       <v-spacer></v-spacer>
       <v-btn icon @click.stop="drawer = !drawer">
@@ -30,8 +41,9 @@
         <v-layout row wrap>
           <v-flex xs12 sm6 md4 xl3 v-for="order in notDoneOrderList" :key="order.id">
             <v-card>
+              {{filter}}
               <v-list dense two-line>
-                <v-subheader v-if="order.bill">{{order.bill.name}} -
+                <v-subheader v-if="order.bill">{{order.bill.name}}&nbsp;-&nbsp;
                   <timeago :since="order.createAt" :auto-update="60"></timeago>
                 </v-subheader>
                 <v-divider></v-divider>
@@ -62,7 +74,6 @@
 
 <script>
 /* eslint no-param-reassign: 0 */
-import moment from 'moment';
 import firebase from 'firebase';
 import firebaseApp from '../connector/firebase';
 
@@ -78,12 +89,20 @@ export default {
       drawer: null,
       filter: {
         categoryIds: [],
+        showNoCategory: true,
       },
     };
   },
   mounted() {
     const { restaurantId } = this.$route.params;
     this.$store.dispatch('listenNotDoneOrderList', restaurantId);
+    const timer = setInterval(() => {
+      if (this.categoryList.length > 0) {
+        const allCategoryId = this.categoryList.map(category => category.id);
+        this.filter.categoryIds = allCategoryId;
+        clearInterval(timer);
+      }
+    }, 250);
   },
   computed: {
     notDoneOrderList() {
@@ -97,12 +116,11 @@ export default {
     filtered(menu) {
       const menuCategoryIds = menu.menu.categories;
       const filterCategoryIds = this.filter.categoryIds;
-      if (filterCategoryIds.length === 0) return true;
+      if (this.filter.showNoCategory && Object.keys(menuCategoryIds).length === 0) {
+        return true;
+      }
       return filterCategoryIds.some(categoryId =>
         Object.prototype.hasOwnProperty.call(menuCategoryIds, categoryId));
-    },
-    getTimeAgo(dateTime) {
-      return moment(dateTime).fromNow();
     },
     onDeleteBtnClick(order, cancelIndex) {
       const newOrderList = [...order.order].map((o, i) => {
