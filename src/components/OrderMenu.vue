@@ -29,7 +29,7 @@
         <v-divider></v-divider>
         <v-subheader>Quantity</v-subheader>
         <v-list-tile>
-          <v-text-field v-model.number="order.quantity" single-line type="number" min="1" :rules="[v => v > 0 || 'At least 1']"></v-text-field>
+          <v-text-field @change="onQuantityChange" v-model.number="order.quantity" single-line type="number" min="1" :rules="[v => v > 0 || 'At least 1']"></v-text-field>
         </v-list-tile>
       </v-list>
       <v-btn v-if="!isUpdateMode" :disabled="!valid" @click="addToCart" class="my-0 bottomBtn" depressed block fixed dark>Add to cart</v-btn>
@@ -98,6 +98,11 @@ export default {
     },
   },
   methods: {
+    onQuantityChange(v) {
+      if (v < 1) {
+        this.order.quantity = 1;
+      }
+    },
     addToCart() {
       const { billId, restaurantId } = this.$route.params;
       const order = { ...this.order };
