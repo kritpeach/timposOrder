@@ -43,7 +43,7 @@
             <v-list-tile-title>{{order.menu.name}} {{order.price.name}} x{{order.quantity}}</v-list-tile-title>
             <v-list-tile-sub-title>{{order.optional}}</v-list-tile-sub-title>
           </v-list-tile-content>
-          <v-list-tile-action-text>฿ {{order.price.value}}</v-list-tile-action-text>
+          <v-list-tile-action-text>฿ {{order.price.value * order.quantity}}</v-list-tile-action-text>
         </router-link>
       </v-list>
 
@@ -59,7 +59,7 @@
               <v-list-tile-title>{{orderItem.menu.name}} {{orderItem.price.name}} x{{orderItem.quantity}}</v-list-tile-title>
               <v-list-tile-sub-title>{{orderItem.optional}}</v-list-tile-sub-title>
             </v-list-tile-content>
-            <v-list-tile-action-text>฿ {{orderItem.price.value}}</v-list-tile-action-text>
+            <v-list-tile-action-text>฿ {{orderItem.price.value * orderItem.quantity}}</v-list-tile-action-text>
           </v-list-tile>
         </template>
       </v-list>
