@@ -3,5 +3,10 @@
 </template>
 
 <script>
-export default {};
+export default {
+  data: () => ({
+    snackbar: true,
+    text: 'Hi! vBros',
+  }),
+};
 </script>
