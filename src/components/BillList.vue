@@ -3,12 +3,21 @@
         <v-toolbar dark color="primary">
             <v-toolbar-title class="white--text">Bill</v-toolbar-title>
             <v-spacer></v-spacer>
-            <v-btn @click="signout">
-                Sign out
-            </v-btn>
-            <v-btn icon>
-                <v-icon>more_vert</v-icon>
-            </v-btn>
+            <v-menu bottom left>
+        <v-btn icon slot="activator" dark>
+          <v-icon>more_vert</v-icon>
+        </v-btn>
+        <v-list>
+            <v-list-tile @click="() => null">
+            <router-link tag="v-list-tile-title" :to="{ name: 'Kitchen', params: {restaurantId: $route.params.restaurantId}}">
+                Kitchen board
+            </router-link>
+            </v-list-tile>
+            <v-list-tile @click="signout">
+              <v-list-tile-title>Sign out</v-list-tile-title>
+            </v-list-tile>
+        </v-list>
+      </v-menu>
         </v-toolbar>
         <v-content>
         <v-list two-line>
