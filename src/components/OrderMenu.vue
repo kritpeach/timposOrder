@@ -1,5 +1,5 @@
 <template>
-  <v-app light>
+  <v-app light v-if="menu">
     <v-toolbar dark color="primary">
       <v-btn icon @click="() => $router.go(-1)">
         <v-icon>arrow_back</v-icon>
@@ -45,20 +45,14 @@ export default {
       .firestore()
       .collection('restaurant')
       .doc(restaurantId);
-    return {
-      restaurantRef,
-    };
-  },
-  beforeMount() {
     const { menuId } = this.$route.params;
     const menuRef = firebaseApp
       .firestore()
       .collection('menu')
       .doc(menuId);
-    if (this.isUpdateMode) {
-      this.order = this.cartOrder;
-    } else {
-      this.order = {
+    return {
+      restaurantRef,
+      order: {
         menu: {
           id: menuId,
           ref: menuRef,
@@ -66,8 +60,23 @@ export default {
         price: null,
         optional: '',
         quantity: 1,
-      };
+      },
+    };
+  },
+  mounted() {
+    if (this.isUpdateMode) {
+      this.order = this.cartOrder;
+    } else if (this.menu) {
+      const defaultPrice = this.menu.prices[0];
+      this.order.price = defaultPrice;
     }
+  },
+  watch: {
+    menu(menu) {
+      // For working when refreshing
+      const defaultPrice = menu.prices[0];
+      this.order.price = defaultPrice;
+    },
   },
   computed: {
     menu() {
