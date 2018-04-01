@@ -43,12 +43,11 @@ import listToMap from '../util/listToMap';
 
 export default {
   data() {
-    const { restaurantId } = this.$route.params;
+    const { restaurantId, menuId } = this.$route.params;
     const restaurantRef = firebaseApp
       .firestore()
       .collection('restaurant')
       .doc(restaurantId);
-    const { menuId } = this.$route.params;
     const menuRef = firebaseApp
       .firestore()
       .collection('menu')
@@ -97,13 +96,17 @@ export default {
   },
   methods: {
     addToCart() {
-      const { billId } = this.$route.params;
+      const { billId, restaurantId } = this.$route.params;
       const order = { ...this.order };
       order.menu.name = this.menu.name;
       order.menu.categories = listToMap(this.menu.categories);
       this.$store.dispatch('addOrderToCart', {
         order,
         billId,
+      });
+      this.$router.replace({
+        name: 'BillDetail',
+        params: { restaurantId, billId },
       });
     },
     removeOrder() {
