@@ -1,7 +1,7 @@
 <template>
   <v-app>
     <v-toolbar dark color="primary">
-      <v-btn icon @click="() => $router.go(-1)">
+      <v-btn icon @click="goToBilllist">
         <v-icon>arrow_back</v-icon>
       </v-btn>
       <v-toolbar-title v-if="bill" class="white--text">{{bill.name}}</v-toolbar-title>
@@ -219,11 +219,18 @@ export default {
         this.sending = false;
       });
     },
+    goToBilllist() {
+      const { restaurantId } = this.$route.params;
+      this.$router.replace({
+        name: 'BillList',
+        params: { restaurantId },
+      });
+    },
   },
   computed: {
     isAllOrderCancelled() {
-      const isAllOrderCancelled = this.orderList.every(order => order.order.every(orderListItem =>
-        orderListItem.cancel === true));
+      const isAllOrderCancelled = this.orderList.every(order =>
+        order.order.every(orderListItem => orderListItem.cancel === true));
       return isAllOrderCancelled;
     },
     change() {
@@ -249,7 +256,14 @@ export default {
         }, 0);
       const totalPrice = orderList
         .map(e => e.order)
-        .reduce((pV, cV) => pV + sumOrder(cV.filter(orderLineItem => orderLineItem.cancel === false || typeof orderLineItem.cancel === 'undefined')), 0);
+        .reduce(
+          (pV, cV) =>
+            pV +
+            sumOrder(cV.filter(orderLineItem =>
+              orderLineItem.cancel === false ||
+                  typeof orderLineItem.cancel === 'undefined')),
+          0,
+        );
       return { totalPrice };
     },
   },
