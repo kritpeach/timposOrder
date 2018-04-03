@@ -116,10 +116,12 @@ export default {
         name: 'BillDetail',
         params: { restaurantId, billId },
       });
+      this.$store.dispatch('showSnackBar', `${order.menu.name} has been added`);
     },
     removeOrder() {
       this.order.billId = '';
       this.$router.go(-1);
+      this.$store.dispatch('showSnackBar', `${this.order.menu.name} has been removed`);
     },
   },
 };

@@ -8,6 +8,7 @@ const orderCartStore = {
     addOrderToCart(state, payload) {
       state.cartOrderList = [...state.cartOrderList,
         { ...payload.order, done: false, billId: payload.billId }];
+      console.log('Add to cart mutation');
     },
     removeOrderFromCartByBillId(state, billId) {
       state.cartOrderList = state.cartOrderList.map(cartOrder => cartOrder.billId !== billId);
@@ -15,6 +16,7 @@ const orderCartStore = {
   },
   actions: {
     addOrderToCart({ commit }, payload) {
+      console.log('addToCartAction');
       commit('addOrderToCart', payload);
     },
     removeOrderFromCartByBillId({ commit }, billId) {
@@ -22,8 +24,10 @@ const orderCartStore = {
     },
   },
   getters: {
-    cartOrderList: state => billId => state.cartOrderList
-      .filter(cartOrder => cartOrder.billId === billId),
+    cartOrderList: state => billId =>
+      // console.log(state.cartOrderList.filter(cartOrder => cartOrder.billId === billId));
+      state.cartOrderList.filter(cartOrder => cartOrder.billId === billId)
+    ,
   },
 };
 

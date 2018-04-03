@@ -184,12 +184,14 @@ export default {
     async closeBill() {
       const { billId, restaurantId } = this.$route.params;
       this.closingBill = true;
+      // const bill = this.$store.getters.bill(billId);
       billService
         .update({
           id: billId,
           status: 'close',
         })
         .then(() => {
+          this.$store.dispatch('showSnackBar', 'Bill has been closed');
           this.closingBill = false;
           this.$router.push({ name: 'BillList', restaurantId });
         });
@@ -216,6 +218,9 @@ export default {
       };
       orderService.create(order).then(() => {
         this.$store.dispatch('removeOrderFromCartByBillId', billId);
+        const wordOrder = cartOrderList.length === 1 ? 'order' : 'orders';
+        const snackBarText = `${cartOrderList.length} ${wordOrder} has been sent`;
+        this.$store.dispatch('showSnackBar', snackBarText);
         this.sending = false;
       });
     },
