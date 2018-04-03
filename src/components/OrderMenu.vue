@@ -1,5 +1,5 @@
 <template>
-  <v-app light v-if="menu">
+  <div v-if="menu">
     <v-toolbar dark color="primary">
       <v-btn icon @click="() => $router.go(-1)">
         <v-icon>arrow_back</v-icon>
@@ -36,7 +36,7 @@
       </v-form>
     </v-content>
 
-  </v-app>
+  </div>
 </template>
 
 <script>

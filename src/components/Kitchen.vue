@@ -1,5 +1,5 @@
 <template>
-  <v-app light>
+  <div>
 
     <v-navigation-drawer fixed v-model="drawer" right app>
       <v-list dense>
@@ -68,7 +68,7 @@
         </v-layout>
       </v-container>
     </v-content>
-  </v-app>
+  </div>
 </template>
 
 <script>

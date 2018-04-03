@@ -1,5 +1,5 @@
 <template>
-	<v-app light>
+	<div>
 		<v-toolbar dark color="primary">
 			<v-btn icon>
 				<v-icon>arrow_back</v-icon>
@@ -21,7 +21,7 @@
 				</v-list-tile>
 			</v-list>
 		</v-content>
-	</v-app>
+	</div>
 </template>
 
 <script>

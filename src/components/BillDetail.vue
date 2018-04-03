@@ -1,5 +1,5 @@
 <template>
-  <v-app>
+  <div>
     <v-toolbar dark color="primary">
       <v-btn icon @click="goToBilllist">
         <v-icon>arrow_back</v-icon>
@@ -107,7 +107,7 @@
         </v-card>
       </v-dialog>
     </v-content>
-  </v-app>
+  </div>
 </template>
 
 <script>

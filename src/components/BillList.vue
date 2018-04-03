@@ -1,5 +1,5 @@
 <template>
-    <v-app light>
+    <div>
         <v-toolbar dark color="primary">
             <v-toolbar-title class="white--text">Bill</v-toolbar-title>
             <v-spacer></v-spacer>
@@ -54,7 +54,7 @@
                 </v-form>
             </v-card>
         </v-dialog>
-    </v-app>
+    </div>
 </template>
 
 <script>

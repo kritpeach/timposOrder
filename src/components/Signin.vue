@@ -1,5 +1,5 @@
 <template>
-  <v-app v-if="authInited" light>
+  <div v-if="authInited">
     <div class="box elevation-4">
       <h1>Staff sign in</h1>
       <v-form v-model="valid">
@@ -15,7 +15,7 @@
         </v-alert>
       </v-form>
     </div>
-  </v-app>
+  </div>
 </template>
 
 <script>

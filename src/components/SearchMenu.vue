@@ -1,5 +1,5 @@
 <template>
-    <v-app light transition="slide-x-transition">
+    <div transition="slide-x-transition">
         <v-toolbar color="primary">
           <v-text-field class="darken-4" autofocus prepend-icon="arrow_back" :prepend-icon-cb="() => $router.go(-1)" solo hide-details single-line v-model="keyword"></v-text-field>
         </v-toolbar>
@@ -12,7 +12,7 @@
           </router-link>
         </v-list>
         </v-content>
-    </v-app>
+    </div>
 </template>
 
 <script>
