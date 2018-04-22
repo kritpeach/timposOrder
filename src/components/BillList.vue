@@ -117,7 +117,11 @@ export default {
     async createBill() {
       this.creating = true;
       await billService.create(this.managementDialog.form).then((bill) => {
-        console.log(bill);
+        const { restaurantId } = this.$route.params;
+        this.$router.push({
+          name: 'BillDetail',
+          params: { restaurantId, billId: bill.id },
+        });
         this.managementDialog.show = false;
       });
       this.creating = false;
