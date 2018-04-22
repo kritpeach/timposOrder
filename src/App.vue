@@ -2,7 +2,7 @@
 <v-app>
 <router-view></router-view>
   <v-snackbar
-    :key="$store.state.snackBar.snackBarDate"
+    :key="snackBarDate"
     :timeout="1250"
     top
     v-model="show">
@@ -19,8 +19,7 @@ export default {
       return this.$store.getters.text;
     },
     snackBarDate() {
-      console.log(this.$store.getters.snackBarDate);
-      return this.$store.getters.snackBarDate;
+      return this.$store.state.snackBar.snackBarDate.toISOString();
     },
     show: {
       get() {
