@@ -63,7 +63,6 @@
           </v-list-tile>
         </template>
       </v-list>
-
       <v-list v-if="orderList !== null && orderList.length > 0" class="mb-2 pa-0" dense>
         <v-subheader>
           <span>Summary</span>
@@ -78,8 +77,11 @@
           <v-list-tile-action-text>฿ {{summary.totalPrice}}</v-list-tile-action-text>
         </v-list-tile>
       </v-list>
-      <div v-if="orderList.length === 0 && cartOrderList.length === 0" id="noOrderContainter" class="container">
-        <div class="title">Once you create a new order, you'll see it listed here</div>
+      <div class="container text-xs-center">
+        <div v-if="loading">
+          <v-progress-circular indeterminate color="primary"></v-progress-circular>
+        </div>        
+        <div v-else-if="orderList.length === 0 && cartOrderList.length === 0" class="title">Once you create a new order, you'll see it listed here</div>
       </div>
       <div style="height: 200px"></div>
       <v-btn fixed dark fab bottom right color="pink" @click.stop="onClickAddFab" :to="{ name: 'SearchMenu', params: { restaurantId: $route.params.restaurantId, billId: $route.params.billId }}">
@@ -142,6 +144,7 @@ export default {
           noMoney: false,
         },
       },
+      loading: true,
       closingBill: false,
       billList: null,
       sending: false,
@@ -159,6 +162,7 @@ export default {
     const { billId } = this.$route.params;
     this.unsubscribe = orderService.onSnapshotByBillId(billId, (orderList) => {
       this.orderList = orderList;
+      this.loading = false;
     });
   },
   destroyed() {
