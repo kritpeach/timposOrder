@@ -78,6 +78,9 @@
           <v-list-tile-action-text>฿ {{summary.totalPrice}}</v-list-tile-action-text>
         </v-list-tile>
       </v-list>
+      <div v-if="orderList.length === 0 && cartOrderList.length === 0" id="noOrderContainter" class="container">
+        <div class="title">Once you create a new order, you'll see it listed here</div>
+      </div>
       <div style="height: 200px"></div>
       <v-btn fixed dark fab bottom right color="pink" @click.stop="onClickAddFab" :to="{ name: 'SearchMenu', params: { restaurantId: $route.params.restaurantId, billId: $route.params.billId }}">
         <v-icon>add</v-icon>
@@ -219,7 +222,9 @@ export default {
       orderService.create(order).then(() => {
         this.$store.dispatch('removeOrderFromCartByBillId', billId);
         const wordOrder = cartOrderList.length === 1 ? 'order' : 'orders';
-        const snackBarText = `${cartOrderList.length} ${wordOrder} has been sent`;
+        const snackBarText = `${
+          cartOrderList.length
+        } ${wordOrder} has been sent`;
         this.$store.dispatch('showSnackBar', snackBarText);
         this.sending = false;
       });
@@ -290,5 +295,20 @@ a {
 
 .done {
   color: #1b5e20;
+}
+
+#noOrderContainter {
+  text-align: center;
+}
+
+html,
+body,
+.container {
+  height: 100%;
+}
+.container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 </style>
