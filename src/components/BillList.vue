@@ -28,6 +28,18 @@
           </v-list-tile-content>
         </router-link>
       </v-list>
+      <div class="container centerContainer text-xs-center">
+        <div v-if="!listeningBillList">
+          <v-progress-circular indeterminate color="primary"></v-progress-circular>
+        </div>        
+        <template v-else-if="billList.length === 0">
+        <div><v-icon size="200px">list</v-icon></div>
+        <div class="title">
+          Once you create a new bill, you'll see it listed here
+        </div>
+        </template>
+      </div>
+      <div style="height: 200px"></div>
       <v-btn fixed dark fab bottom right color="pink" @click.stop="onClickAddFab">
         <v-icon>add</v-icon>
       </v-btn>
@@ -36,8 +48,7 @@
       <v-card>
         <v-form v-model="managementDialog.valid" ref="form">
           <v-card-title>
-            <span v-if="billList.length === 0" class="headline">No opened bill, Let create!</span>
-            <span v-else class="headline">Open bill</span>
+            <span class="headline">Open bill</span>
           </v-card-title>
           <v-card-text>
             <v-alert type="warning" :value="true" v-if="managementDialog.error.duplicate">This bill name has already been used.</v-alert>
@@ -91,14 +102,18 @@ export default {
     billList() {
       return this.$store.getters.billList;
     },
+    listeningBillList() {
+      return this.$store.getters.listeningBillList;
+    },
   },
   mounted() {
-    const timer = setInterval(() => {
+    /* const timer = setInterval(() => {
       if (this.billList.length === 0) {
         this.managementDialog.show = true;
         clearInterval(timer);
       }
     }, 250);
+    */
   },
   methods: {
     async onClickAddFab() {
@@ -133,5 +148,16 @@ export default {
 <style scoped>
 a {
   text-decoration: none;
+}
+html,
+body,
+.container {
+  height: 100%;
+}
+.centerContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
 }
 </style>

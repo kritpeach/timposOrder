@@ -77,14 +77,17 @@
           <v-list-tile-action-text>฿ {{summary.totalPrice}}</v-list-tile-action-text>
         </v-list-tile>
       </v-list>
-      <div class="container text-xs-center">
+      <div class="container centerContainer text-xs-center">
         <div v-if="loading">
           <v-progress-circular indeterminate color="primary"></v-progress-circular>
         </div>        
-        <div v-else-if="orderList.length === 0 && cartOrderList.length === 0" class="title">Once you create a new order, you'll see it listed here</div>
+        <template v-else-if="orderList.length === 0 && cartOrderList.length === 0">
+        <div><v-icon size="200px">restaurant_menu</v-icon></div>
+        <div class="title">Once you create a new order, you'll see it listed here</div>
+        </template>
       </div>
       <div style="height: 200px"></div>
-      <v-btn fixed dark fab bottom right color="pink" @click.stop="onClickAddFab" :to="{ name: 'SearchMenu', params: { restaurantId: $route.params.restaurantId, billId: $route.params.billId }}">
+      <v-btn fixed dark fab bottom right color="red" @click.stop="onClickAddFab" :to="{ name: 'SearchMenu', params: { restaurantId: $route.params.restaurantId, billId: $route.params.billId }}">
         <v-icon>add</v-icon>
       </v-btn>
       <v-dialog v-model="billDialog.show" persistent max-width="500px">
@@ -301,18 +304,15 @@ a {
   color: #1b5e20;
 }
 
-#noOrderContainter {
-  text-align: center;
-}
-
 html,
 body,
 .container {
   height: 100%;
 }
-.container {
+.centerContainer {
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-direction: column;
 }
 </style>
