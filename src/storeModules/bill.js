@@ -27,6 +27,7 @@ const billStore = {
   getters: {
     billList: state => state.billList,
     bill: state => id => state.billList.find(bill => bill.id === id),
+    listeningBillList: state => state.listeningBill,
   },
 };
 
