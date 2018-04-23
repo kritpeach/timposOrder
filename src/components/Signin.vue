@@ -36,7 +36,7 @@ export default {
       if (user) {
         const idToken = await user.getIdToken();
         const payload = JSON.parse(b64DecodeUnicode(idToken.split('.')[1]));
-        if (payload.role === 'staff') {
+        if (payload.role === 'staff' || payload.role === 'manager') {
           console.log(this.$route.query);
           this.$store.dispatch('listenBillList', payload.restaurantId);
           this.$store.dispatch('listenCategoryList', payload.restaurantId);

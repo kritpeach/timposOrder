@@ -19,9 +19,9 @@ import router from './router';
 const vueTimeAgoEn = require('vue-timeago/locales/en-US.json');
 
 const httpLink = new HttpLink({
-  uri: 'http://localhost:5000/tumtim-50d1c/us-central1/api/graphql',
+  uri: 'https://us-central1-tumtim-50d1c.cloudfunctions.net/api/graphql',
 });
-
+// http://localhost:5000/tumtim-50d1c/us-central1/api/graphql
 const authLink = setContext(async (_, { headers }) => {
   let token = null;
   try {
