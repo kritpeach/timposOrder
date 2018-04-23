@@ -163,13 +163,17 @@ export default {
   },
   mounted() {
     const { billId } = this.$route.params;
-    this.unsubscribe = orderService.onSnapshotByBillId(billId, (orderList) => {
-      this.orderList = orderList;
-      this.loading = false;
-    });
+    if (billId) {
+      this.unsubscribe = orderService.onSnapshotByBillId(billId, (orderList) => {
+        this.orderList = orderList;
+        this.loading = false;
+      });
+    }
   },
   destroyed() {
-    this.unsubscribe();
+    if (this.unsubscribe) {
+      this.unsubscribe();
+    }
   },
   methods: {
     async onClickBill() {
@@ -188,7 +192,7 @@ export default {
           status: 'cancel',
         })
         .then(() => {
-          this.$router.push({ name: 'BillList', restaurantId });
+          this.$router.replace({ name: 'BillList', restaurantId });
         });
     },
     async closeBill() {
@@ -203,7 +207,7 @@ export default {
         .then(() => {
           this.$store.dispatch('showSnackBar', 'Bill has been closed');
           this.closingBill = false;
-          this.$router.push({ name: 'BillList', restaurantId });
+          this.$router.replace({ name: 'BillList', restaurantId });
         });
     },
     async send() {
@@ -255,7 +259,11 @@ export default {
     },
     bill() {
       const { billId } = this.$route.params;
-      return this.$store.getters.bill(billId);
+      const bill = this.$store.getters.bill(billId);
+      if (typeof bill === 'undefined') {
+        // this.$router.replace({ name: 'BillList', restaurantId });
+      }
+      return bill;
     },
     cartOrderList() {
       const { billId } = this.$route.params;
