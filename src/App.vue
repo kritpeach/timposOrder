@@ -4,7 +4,7 @@
   <v-snackbar
     :key="snackBarDate"
     :timeout="1250"
-    top
+    bottom
     v-model="show">
     {{ text }}
     <!--<v-btn flat color="pink" @click.native="$store.dispatch('setShow', false)">Close</v-btn>-->
