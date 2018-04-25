@@ -3,7 +3,7 @@
     <v-toolbar dark color="primary">
       <v-toolbar-title class="white--text">Bill</v-toolbar-title>
       <v-spacer></v-spacer>
-      <v-toolbar-items class="hidden-sm-and-down">
+      <v-toolbar-items>
         <v-btn flat>{{ name }}</v-btn>
       </v-toolbar-items>
       <v-menu bottom left>
