@@ -53,6 +53,15 @@ const remove = async employeeId => firebaseApp
   .doc(employeeId)
   .delete();
 
+const getEmpByPassword = async (restaurantId, password) => {
+  const restaurant = firebaseApp.firestore().collection('restaurant').doc(restaurantId);
+  return firebaseApp
+    .firestore()
+    .collection('employee')
+    .where('restaurant', '==', restaurant)
+    .where('password', '==', password)
+    .get();
+};
 
 const onSnapshot = (restaurantId, callback) => {
   const restaurant = firebaseApp.firestore().collection('restaurant').doc(restaurantId);
@@ -71,5 +80,5 @@ const onSnapshot = (restaurantId, callback) => {
   return unsubscribe;
 };
 export default {
-  create, update, remove, onSnapshot,
+  create, update, remove, onSnapshot, getEmpByPassword,
 };

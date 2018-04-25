@@ -3,6 +3,9 @@
     <v-toolbar dark color="primary">
       <v-toolbar-title class="white--text">Bill</v-toolbar-title>
       <v-spacer></v-spacer>
+      <v-toolbar-items class="hidden-sm-and-down">
+        <v-btn flat>{{ name }}</v-btn>
+      </v-toolbar-items>
       <v-menu bottom left>
         <v-btn icon slot="activator" dark>
           <v-icon>more_vert</v-icon>
@@ -31,12 +34,14 @@
       <div class="container centerContainer text-xs-center">
         <div v-if="!listeningBillList">
           <v-progress-circular indeterminate color="primary"></v-progress-circular>
-        </div>        
-        <template v-else-if="billList.length === 0">
-        <div><v-icon size="200px">list</v-icon></div>
-        <div class="title">
-          Once you create a new bill, you'll see it listed here
         </div>
+        <template v-else-if="billList.length === 0">
+          <div>
+            <v-icon size="200px">list</v-icon>
+          </div>
+          <div class="title">
+            Once you create a new bill, you'll see it listed here
+          </div>
         </template>
       </div>
       <div style="height: 200px"></div>
@@ -74,6 +79,7 @@
 <script>
 import firebaseApp from '../connector/firebase';
 import billService from '../service/bill';
+import employeeService from '../service/employee';
 
 export default {
   data() {
@@ -95,6 +101,7 @@ export default {
           duplicate: false,
         },
       },
+      name: null,
       creating: false,
     };
   },
@@ -107,13 +114,12 @@ export default {
     },
   },
   mounted() {
-    /* const timer = setInterval(() => {
-      if (this.billList.length === 0) {
-        this.managementDialog.show = true;
-        clearInterval(timer);
-      }
-    }, 250);
-    */
+    const { restaurantId } = this.$route.params;
+    const { uid } = firebaseApp.auth().currentUser;
+    const password = uid.split(restaurantId)[1];
+    employeeService.getEmpByPassword(restaurantId, password).then((emp) => {
+      this.name = emp.docs[0].data().name;
+    });
   },
   methods: {
     async onClickAddFab() {
