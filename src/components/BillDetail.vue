@@ -125,8 +125,8 @@ import billService from '../service/bill';
 
 export default {
   data() {
-    const { restaurantId } = this.$route.params;
-    const restaurantRef = firebaseApp
+    const restaurantId = this.$route.params.restaurantId;
+    const restaurant = firebaseApp
       .firestore()
       .collection('restaurant')
       .doc(restaurantId);
