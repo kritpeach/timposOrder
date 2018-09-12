@@ -1,30 +1,29 @@
-# tim_order
+# TumTim POS for staff
+Restaurant POS - Progressive Web Application
 
-> A Vue.js project
+### Demo
+https://tumtim-50d1c.firebaseapp.com
 
-## Build Setup
+username: tryumm
 
+password: 11111111
+
+## Getting Started
+### Prerequisites
+- Node.js 8.12
+
+### Installing
 ``` bash
 # install dependencies
-npm install
+yarn install
 
-# serve with hot reload at localhost:8080
-npm run dev
-
-# build for production with minification
-npm run build
-
-# build for production and view the bundle analyzer report
-npm run build --report
-
-# run unit tests
-npm run unit
-
-# run e2e tests
-npm run e2e
-
-# run all tests
-npm test
+# serve
+yarn run dev
 ```
 
-For detailed explanation on how things work, checkout the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
+## Built With
+- Vue.js
+- Vuex
+- Vuetify
+- Firebase Firestore
+- A little bit of experiment with GraphQL on Cloud Functions for Firebase
