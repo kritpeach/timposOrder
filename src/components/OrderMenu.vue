@@ -101,6 +101,8 @@ export default {
     onQuantityChange(v) {
       if (v < 1) {
         this.order.quantity = 1;
+      } else {
+        this.order.quantity = Math.floor(v);
       }
     },
     addToCart() {
