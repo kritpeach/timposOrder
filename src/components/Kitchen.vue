@@ -43,7 +43,7 @@
             <v-card>
               <v-list dense two-line>
                 <v-subheader v-if="order.bill">{{order.bill.name}}&nbsp;-&nbsp;
-                  <timeago :since="order.createAt" :auto-update="60"></timeago>
+                  <timeago :since="order.createAt.toDate()" :auto-update="60"></timeago>
                 </v-subheader>
                 <v-divider></v-divider>
                 <v-list-tile v-for="(menu,i) in order.order" v-if="filtered(menu)" :key="order.id + i" :class="{cancel: menu.cancel}">

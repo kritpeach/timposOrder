@@ -26,7 +26,7 @@
           <v-list-tile-content>
             <v-list-tile-title v-text="bill.name"></v-list-tile-title>
             <v-list-tile-sub-title>
-              <timeago :since="bill.createAt" :auto-update="60"></timeago>
+              <timeago :since="bill.createAt.toDate()" :auto-update="60"></timeago>
             </v-list-tile-sub-title>
           </v-list-tile-content>
         </router-link>
