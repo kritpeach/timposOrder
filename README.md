@@ -8,6 +8,9 @@ username: tryumm
 
 password: 11111111
 
+### For manager
+https://github.com/kritpeach/timpos
+
 ## Getting Started
 ### Prerequisites
 - Node.js 8.12
